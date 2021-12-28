@@ -10,7 +10,6 @@ with open('config.lk', 'r') as f:
     password = lines[2].split(':')[1].strip('\n').strip(' ')
     print(ID, email, password)
 
-exit()
 driver = webdriver.Firefox()
 driver.get(f'https://www.netflix.com/settings/viewed/{ID}')
 
