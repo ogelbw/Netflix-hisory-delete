@@ -3,12 +3,30 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from time import sleep
 
-with open('config.lk', 'r') as f:
-    lines = f.readlines()
-    ID = lines[0].split(':')[1].strip('\n').strip(' ')
-    email = lines[1].split(':')[1].strip('\n').strip(' ')
-    password = lines[2].split(':')[1].strip('\n').strip(' ')
-    print(ID, email, password)
+
+def makeConfig():
+    global ID, email, password
+    with open('config.lk', 'w') as f:
+        ID = str(input('Please enter your netflix id (from viewing page): '))
+        email = str(input('Please enter the email used to make your netflix account: '))
+        password = str(input('Please enter your netflix password (this is saved as plain text so make sure you trust eveyone with access): '))
+        f.write(f'''id: {ID}
+email: {email}
+password: {password}''')
+
+try:
+    with open('config.lk', 'r') as f:
+            lines = f.readlines()
+            try:
+                ID = lines[0].split(':')[1].strip('\n').strip(' ')
+                email = lines[1].split(':')[1].strip('\n').strip(' ')
+                password = lines[2].split(':')[1].strip('\n').strip(' ')
+                print(ID, email, password)
+            except IndexError:
+                makeConfig()
+
+except FileNotFoundError:
+    makeConfig()
 
 driver = webdriver.Firefox()
 driver.get(f'https://www.netflix.com/settings/viewed/{ID}')
@@ -27,6 +45,6 @@ try:
     clearhistory()
 except NoSuchElementException:
     print('The History is already clear, or the netflix page has changed.\nThe program will terminate in 10 seconds')
-    sleep(10)
 finally:
+    sleep(10)
     driver.close()
